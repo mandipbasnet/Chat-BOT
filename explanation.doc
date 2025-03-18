@@ -1,0 +1,176 @@
+Importing Libraries
+
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from sklearn.preprocessing import LabelEncoder
+import random
+import json
+import nltk
+from nltk.stem import WordNetLemmatizer
+nltk.download('punkt')
+nltk.download('wordnet')
+numpy: Helps handle arrays and numerical operations.
+tensorflow and keras: Build and train the neural network.
+LabelEncoder: Encodes labels (categories) into numbers.
+random: Picks random responses.
+json: Loads the intents JSON file.
+nltk: Natural Language Toolkit, used for processing text.
+WordNetLemmatizer: Reduces words to their base form (e.g., "running" → "run").
+nltk.download: Ensures necessary NLTK data is downloaded.
+
+Load and Process Data
+python
+
+
+with open('intents.json') as file:
+    data = json.load(file)
+Loads the intents.json file, which contains patterns and responses.
+
+Preprocessing
+
+
+
+lemmatizer = WordNetLemmatizer()
+words = []
+classes = []
+documents = []
+ignore_words = ['?', '!', '.', ',']
+lemmatizer: Initializes the lemmatizer.
+
+words: Stores all words from patterns.
+classes: Stores unique tags (intents).
+documents: Holds (pattern, tag) pairs.
+ignore_words: Ignores punctuation.
+
+
+
+
+for intent in data['intents']:
+    for pattern in intent['patterns']:
+        word_list = nltk.word_tokenize(pattern)
+        words.extend(word_list)
+        documents.append((word_list, intent['tag']))
+        if intent['tag'] not in classes:
+            classes.append(intent['tag'])
+Loops through each pattern:
+Tokenizes the pattern into words.
+Adds words to words.
+Saves (words, tag) in documents.
+Adds unique tags to classes.
+
+words = [lemmatizer.lemmatize(w.lower()) for w in words if w not in ignore_words]
+words = sorted(set(words))
+classes = sorted(set(classes))
+Lemmatizes and lowercases all words, ignoring punctuations.
+
+Removes duplicates by converting to set, then sorts them.
+Create Training Data
+
+training = []
+output_empty = [0] * len(classes)
+training: Holds training data.
+
+output_empty: Template for one-hot encoding (a list of zeros).
+
+for document in documents:
+    bag = []
+    word_patterns = [lemmatizer.lemmatize(w.lower()) for w in document[0]]
+    for w in words:
+        bag.append(1 if w in word_patterns else 0)
+    output_row = list(output_empty)
+    output_row[classes.index(document[1])] = 1
+    training.append([bag, output_row])
+Creates "bag of words" representation:
+bag is a list that marks 1 if a word from words is in the pattern.
+output_row marks the correct class with 1.
+
+
+random.shuffle(training)
+training = np.array(training, dtype=object)
+train_x = np.array([i[0] for i in training])
+train_y = np.array([i[1] for i in training])
+Shuffles the training data.
+
+Splits into train_x (inputs) and train_y (labels).
+
+Build the Model
+
+model = keras.Sequential([
+    keras.layers.Dense(128, input_shape=(len(train_x[0]),), activation='relu'),
+    keras.layers.Dropout(0.5),
+    keras.layers.Dense(64, activation='relu'),
+    keras.layers.Dropout(0.5),
+    keras.layers.Dense(len(train_y[0]), activation='softmax')
+])
+Sequential model with:
+Input layer (128 neurons, ReLU activation).
+Dropout layers to prevent overfitting.
+Hidden layer (64 neurons, ReLU activation).
+Output layer (softmax for multi-class classification).
+
+
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.fit(train_x, train_y, epochs=200, batch_size=5, verbose=1)
+model.save('chatbot_model.h5')
+Compiles the model with:
+
+adam: Adaptive optimizer.
+
+categorical_crossentropy: Suitable for multi-class classification.
+
+Trains for 200 epochs with batch size 5.
+Saves the trained model as chatbot_model.h5.
+Load Model and Chat Function
+
+model = keras.models.load_model('chatbot_model.h5')
+def clean_up_sentence(sentence):
+    sentence_words = nltk.word_tokenize(sentence)
+    sentence_words = [lemmatizer.lemmatize(word.lower()) for word in sentence_words]
+    return sentence_words
+Loads the saved model.
+
+clean_up_sentence tokenizes and lemmatizes input sentences.
+
+
+def bag_of_words(sentence):
+    sentence_words = clean_up_sentence(sentence)
+    bag = [0] * len(words)
+    for s in sentence_words:
+        for i, w in enumerate(words):
+            if w == s:
+                bag[i] = 1
+    return np.array(bag)
+Creates a "bag of words" for input text.
+
+
+def predict_class(sentence):
+    bow = bag_of_words(sentence)
+    res = model.predict(np.array([bow]))[0]
+    return classes[np.argmax(res)]
+Predicts the class (intent) for the input sentence:
+Converts the sentence to a "bag of words."
+Predicts the output and picks the class with the highest probability.
+
+
+def get_response(tag):
+    for intent in data['intents']:
+        if intent['tag'] == tag:
+            return random.choice(intent['responses'])
+Picks a random response for the predicted class.
+
+
+print("Chatbot is ready! Type 'quit' to exit.")
+while True:
+    message = input("You: ")
+    if message.lower() == 'quit':
+        break
+    intent = predict_class(message)
+    response = get_response(intent)
+    print("Chatbot:", response)
+Runs a chat loop:
+
+Takes user input.
+Predicts the intent.
+Responds with a random response from the corresponding intent.
+Stops if the user types "quit."

@@ -1,0 +1,74 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": ["Hi", "Hello", "Hey", "Good morning", "Good evening", "Howdy", "What's up?", "Yo", "Greetings"],
+      "responses": ["Hello!", "Hi there!", "Hey!", "Good to see you!", "Hi, how can I help you?"]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": ["Bye", "Goodbye", "See you later", "Take care", "Farewell", "Catch you later", "Adios"],
+      "responses": ["Goodbye!", "Take care!", "See you later!", "Bye, have a great day!"]
+    },
+    {
+      "tag": "thanks",
+      "patterns": ["Thanks", "Thank you", "Appreciate it", "Much obliged", "Thanks a lot", "Grateful"],
+      "responses": ["You're welcome!", "No problem!", "Anytime!", "Glad I could help."]
+    },
+    {
+      "tag": "help",
+      "patterns": ["Help", "Can you help me?", "I need assistance", "Could you assist me?", "Help me please"],
+      "responses": ["Of course! What do you need help with?", "I'm here to help. What’s the problem?", "Sure, how can I assist you?"]
+    },
+    {
+      "tag": "weather",
+      "patterns": ["What's the weather like?", "Tell me the weather", "Is it sunny today?", "Weather update", "Will it rain today?"],
+      "responses": ["I'm not a weather bot, but you can check a weather app!", "I don’t know, but I hope it’s nice!", "Why not check a weather site?"]
+    },
+    {
+      "tag": "joke",
+      "patterns": ["Tell me a joke", "Make me laugh", "Got any jokes?", "Humor me", "Say something funny"],
+      "responses": ["Why don’t skeletons fight each other? They don’t have the guts.", "I told my wife she was drawing her eyebrows too high. She looked surprised!", "Parallel lines have so much in common. It’s a shame they’ll never meet."]
+    },
+    {
+      "tag": "time",
+      "patterns": ["What time is it?", "Can you tell me the time?", "Current time", "What's the time now?"],
+      "responses": ["I don't have a watch, but you can check your device!", "Time flies when you’re having fun.", "Why not check a clock?"]
+    },
+    {
+      "tag": "date",
+      "patterns": ["What's the date today?", "Today's date", "What day is it?", "Current date"],
+      "responses": ["I’m not sure, but your device should know!", "Every day is a good day to learn something new.", "I think you should check a calendar."]
+    },
+    {
+      "tag": "motivation",
+      "patterns": ["Motivate me", "I need inspiration", "Give me a pep talk", "Can you inspire me?"],
+      "responses": ["You can achieve anything with persistence and hard work!", "Keep pushing forward, you’re doing great!", "Believe in yourself. Every step counts!"]
+    },
+    {
+      "tag": "food",
+      "patterns": ["I'm hungry", "Suggest me some food", "What should I eat?", "Recommend a dish"],
+      "responses": ["How about pizza? It’s always a good choice!", "Maybe try a nice bowl of pasta.", "Tacos sound great right now."]
+    },
+    {
+      "tag": "sports",
+      "patterns": ["What's the latest sports news?", "Who won the game?", "Tell me about sports", "Sports update"],
+      "responses": ["I’m not a sports commentator, but you can check the latest scores online!", "Sports are exciting! Who’s your favorite team?"]
+    },
+    {
+      "tag": "music",
+      "patterns": ["Recommend me a song", "What should I listen to?", "Play some music", "Any song suggestions?"],
+      "responses": ["How about some classic rock?", "Try listening to lo-fi beats for focus.", "Pop music never fails to lift the mood."]
+    },
+    {
+      "tag": "technology",
+      "patterns": ["Tell me about AI", "What’s new in tech?", "Latest technology", "Tech update"],
+      "responses": ["AI is transforming the world, one algorithm at a time!", "Technology evolves rapidly — stay curious!"]
+    },
+    {
+      "tag": "unknown",
+      "patterns": ["I don’t understand", "What are you saying?", "Can you repeat?", "Say that again"],
+      "responses": ["I'm sorry, could you rephrase that?", "I didn’t get that. Can you try again?", "Hmm, I’m not sure what you mean."]
+    }
+  ]
+}
